@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="res.groups" id="external_signature_user">
+        <field name="name">Access external signs</field>
+        <field name="category_id" ref="base.module_category_usability" />
+    </record>
+
+    <record model="res.groups" id="external_signature_manager">
+        <field name="name">Manage external signs</field>
+        <field name="category_id" ref="base.module_category_usability" />
+    </record>
+
+</odoo>

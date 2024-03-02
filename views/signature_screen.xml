@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="action_signature_screen" model="ir.actions.act_window">
+        <field name="name">Signature Screens</field>
+        <field name="res_model">signature.screen</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <menuitem name="Signature Screens" id="menu_signature_screen" sequence="10" action="action_signature_screen"/>
+</odoo>

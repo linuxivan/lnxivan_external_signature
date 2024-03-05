@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+    <t t-name="lnxivan_external_signature.SignatureScreen" t-inherit="web.FormView">
+        <xpath expr="//div[hasclass('o_form_view_container')]" position="replace">
+            <div class="o_form_view">
+                <div class="waiting_signature_div">
+                    <h1 class="waiting_signature_text"><span t-esc="modelData.text"/></h1>
+                    <img t-att-src="modelData.image" class="waiting_signature_image"/>
+                    <h3 class="waiting_signature_subtext" t-if="modelData.description"><span t-esc="modelData.description"/></h3>
+                </div>
+                <div class="button-container">
+<!--                <button class="btn btn-primary" t-on-click="() => this.clearSignature()">Clear</button>-->
+<!--                    <button class="btn btn-primary" t-on-click="() => this.saveSignature()">Sign</button>-->
+            </div>
+                <div class="canvas-container">
+                <canvas id="signature-pad" class="o-signature-canvas" width="400" height="400"
+                        t-ref="signatureCanvas"></canvas>
+            </div>
+                </div>
+        </xpath>
+    </t>
+        </template>

@@ -4,7 +4,7 @@ import {registry} from "@web/core/registry"
 import {formView} from "@web/views/form/form_view"
 import {FormController} from "@web/views/form/form_controller"
 import {useService} from "@web/core/utils/hooks"
-import { url } from "@web/core/utils/urls";
+import {url} from "@web/core/utils/urls";
 
 const {onWillStart, onMounted, onWillUpdate, onUpdated, onDestroyed} = owl
 const {Component, useState} = owl
@@ -12,15 +12,20 @@ const {Component, useState} = owl
 class SignatureFormController extends FormController {
     setup() {
         super.setup()
-
         this.modelData = useState({
             text: "",
             description: "",
             image: "",
         })
+
+
+        this.pickingData = useState({
+            pickinId: "",
+        })
         console.log(this)
         this.orm = useService("orm")
         this.canvas = owl.useRef("signatureCanvas");
+        this.waiting_div = owl.useRef("waiting_div");
 
         onMounted(() => {
             this.createSignatureCanvas()
@@ -28,6 +33,36 @@ class SignatureFormController extends FormController {
 
         this.getData().then(r => console.log(r))
 
+        setInterval(() => {
+                this.getPickinId().then(r => this.hideOrShowDiv())
+            }
+            , 5000)
+
+    }
+
+    hideWaitingDiv() {
+        this.waiting_div.el.style.display = "none";
+    }
+
+    showWaitingDiv() {
+        this.clearSignature();
+        this.waiting_div.el.style.display = "flex";
+        console.log("Showing waiting div")
+    }
+
+    async saveSignature() {
+        const canvas = this.canvas.el;
+        const imageDataURL = canvas.toDataURL();
+        console.log(imageDataURL)
+        try {
+            // Enviar la imagen al servidor y guardarla en el campo "signature" del registro
+            await this.orm.call("signature.session", "write", [[this.props.resId], {
+                signature: imageDataURL.split(',')[1], // Envía solo el contenido de la imagen (sin el prefijo "data:image/png;base64,")
+            }]);
+            console.log("Signature saved successfully");
+        } catch (error) {
+            console.error("Error saving signature:", error);
+        }
     }
 
     async getData() {
@@ -51,11 +86,26 @@ class SignatureFormController extends FormController {
 
     }
 
+    async getPickinId() {
+        this.pickingData.pickinId = await this.orm.call("signature.session", "search_read", [], {
+            fields: ["picking_id"],
+            domain: [["id", "=", this.props.resId]],
+        });
+    }
+
+    hideOrShowDiv() {
+        if (this.pickingData.pickinId[0].picking_id) {
+            this.hideWaitingDiv()
+        } else {
+            this.showWaitingDiv()
+        }
+    }
+
     createSignatureCanvas() {
         console.log("Creating signature canvas");
         const canvas = this.canvas.el;
         const ctx = canvas.getContext("2d");
-
+        const controller = this;
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
@@ -69,6 +119,8 @@ class SignatureFormController extends FormController {
         function endPosition() {
             painting = false;
             ctx.beginPath();
+
+            controller.saveSignature()
         }
 
         function draw(e) {
@@ -109,9 +161,6 @@ class SignatureFormController extends FormController {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    saveSignature() {
-        console.log("hola")
-    }
 
 }
 

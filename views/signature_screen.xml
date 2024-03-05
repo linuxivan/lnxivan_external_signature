@@ -29,7 +29,7 @@
         <field name="name">signature.session.tree</field>
         <field name="model">signature.session</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree editable="bottom">
                 <field name="date"/>
                 <field name="end_date" attrs="{'invisible': [('state', '!=', 'done')]}"/>
                 <field name="user_id"/>

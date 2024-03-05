@@ -3,7 +3,7 @@
     <t t-name="lnxivan_external_signature.SignatureScreen" t-inherit="web.FormView">
         <xpath expr="//div[hasclass('o_form_view_container')]" position="replace">
             <div class="o_form_view">
-                <div class="waiting_signature_div">
+                <div class="waiting_signature_div" t-ref="waiting_div">
                     <h1 class="waiting_signature_text"><span t-esc="modelData.text"/></h1>
                     <img t-att-src="modelData.image" class="waiting_signature_image"/>
                     <h3 class="waiting_signature_subtext" t-if="modelData.description"><span t-esc="modelData.description"/></h3>

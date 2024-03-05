@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
+<!--    inherit a stock.view_picking_form de el modelo stock.picking-->
+    <record id="stock_picking_external_signature_wizard_button" model="ir.ui.view">
+        <field name="name">stock.picking.external.signature.wizard.button</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel']" position="before">
+                <button string="External signature" type="object" name="action_open_signature_wizard" class="oe_highlight" groups="lnxivan_external_signature.external_signature_manager,lnxivan_external_signature.external_signature_user"/>
+            </xpath>
+        </field>
+    </record>
 
 </odoo>

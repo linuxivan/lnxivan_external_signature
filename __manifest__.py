@@ -9,6 +9,8 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'views/signature_screen.xml',
+        'views/stock_picking.xml',
+        'wizard/stock_picking_external_signature_wizard.xml',
     ],
     'installable': True,
     'application': True,

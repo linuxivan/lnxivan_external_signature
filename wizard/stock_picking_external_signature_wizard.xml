@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="stock_picking_external_signature_wizard_form" model="ir.ui.view">
+        <field name="name">stock.picking.external.signature.wizard.form</field>
+        <field name="model">stock.picking.external.signature.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="signature" widget="image" readonly="1"/>
+                        <field name="signature_session_id" invisible="1"/>
+                        <field name="picking_id" invisible="1"/>
+                        <field name="status" invisible="1"/>
+                    </group>
+                    <button string="Resquest signature" type="object" name="request_signature" class="oe_highlight" attrs="{'invisible': [('status', '==', 'requested')]}"/>
+                    <button string="Get signature" type="object" name="action_get_signature" class="oe_highlight ml-2" attrs="{'invisible': [('status', '!=', 'requested')]}"/>
+                    <button string="Sign Picking" type="object" name="sign_picking" class="oe_highlight ml-2" attrs="{'invisible': [('status', '!=', 'requested')]}"/>
+                </sheet>
+                <footer>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

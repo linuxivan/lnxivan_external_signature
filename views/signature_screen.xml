@@ -34,6 +34,7 @@
                 <field name="end_date" attrs="{'invisible': [('state', '!=', 'done')]}"/>
                 <field name="user_id"/>
                 <field name="state"/>
+                <field name="picking_id"/>
                 <button name="continue_session" string="Continue" type="object" class="oe_highlight" attrs="{'invisible': [('state', '==', 'done')]}"/>
                 <button name="action_done" string="End" type="object" class="oe_highlight" attrs="{'invisible': [('state', '==', 'done')]}"/>
             </tree>

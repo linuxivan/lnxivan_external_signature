@@ -78,3 +78,11 @@ class SignatureSession(models.Model):
     def action_draft(self):
         self.state = 'draft'
         return True
+
+    @api.model
+    def create(self, values):
+        record = super(SignatureSession, self).create(values)
+        existing_sessions = self.search(
+            [('user_id', '=', record.user_id.id), ('state', '=', 'draft'), ('id', '!=', record.id)])
+        if existing_sessions:
+            raise ValueError("There is a session started already")

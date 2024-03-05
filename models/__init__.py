@@ -1,1 +1,1 @@
-from . import signature_screen
+from . import signature_screen, stock_picking

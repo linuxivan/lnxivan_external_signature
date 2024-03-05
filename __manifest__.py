@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 {
-    'name' : 'Linuxivan External Signature',
-    'version' : '1.0',
+    'name': 'Linuxivan External Signature',
+    'version': '1.0',
     'summary': 'Adds the option of sign documents with external signature',
     'category': 'Web',
-    'depends' : ['base', 'web', 'stock'],
+    'depends': ['base', 'web', 'stock'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
@@ -14,9 +14,9 @@
     'application': True,
     'assets': {
         'web.assets_backend': [
-            'owl/static/src/components/*/*.js',
-            'owl/static/src/components/*/*.xml',
-            'owl/static/src/components/*/*.scss',
+            'lnxivan_external_signature/static/src/components/*/*.js',
+            'lnxivan_external_signature/static/src/components/*/*.xml',
+            'lnxivan_external_signature/static/src/components/*/*.scss',
         ],
     },
 }

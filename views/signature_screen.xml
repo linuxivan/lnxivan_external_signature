@@ -6,5 +6,49 @@
         <field name="view_mode">kanban,tree,form</field>
     </record>
 
-    <menuitem name="Signature Screens" id="menu_signature_screen" sequence="10" action="action_signature_screen"/>
+    <record id="signature_screen_form" model="ir.ui.view">
+        <field name="name">signature.screen.form</field>
+        <field name="model">signature.screen</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="text"/>
+                        <field name="description"/>
+                        <field name="image" widget="image"/>
+                        <field name="signature_session_id" readonly="1"/>
+                    </group>
+                    <button string="Create new session" type="object" name="action_start_session" class="oe_highlight"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="signature_session_tree" model="ir.ui.view">
+        <field name="name">signature.session.tree</field>
+        <field name="model">signature.session</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="end_date" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+                <field name="user_id"/>
+                <field name="state"/>
+                <button name="continue_session" string="Continue" type="object" class="oe_highlight" attrs="{'invisible': [('state', '==', 'done')]}"/>
+                <button name="action_done" string="End" type="object" class="oe_highlight" attrs="{'invisible': [('state', '==', 'done')]}"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="signature_session_form" model="ir.ui.view">
+        <field name="name">signature.session.form</field>
+        <field name="model">signature.session</field>
+        <field name="arch" type="xml">
+            <form js_class="signature_form_view">
+            </form>
+        </field>
+    </record>
+
+    <menuitem name="Signature Screens" id="menu_signature_screen" sequence="10" action="action_signature_screen"
+              web_icon="lnxivan_external_signature,static/description/icon.png"/>
 </odoo>

@@ -34,6 +34,8 @@ class SignatureSession(models.Model):
 
     name = fields.Char(string='Name', store=True, compute='_compute_name')
 
+    request_wizard_id = fields.Many2one('stock.picking.external.signature.wizard', string='Request Wizard', default=False)
+
     @api.depends('signature_screen_id', 'user_id', 'date')
     def _compute_name(self):
         for record in self:

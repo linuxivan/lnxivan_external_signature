@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template xml:space="preserve">
+    <t t-name="lnxivan_external_signature.SignatureWizard" t-inherit="web.FormView">
+        <xpath expr="//div[hasclass('o_form_view_container')]" position="before">
+            <div class="div_wizard_signature">
+                <img src="https://i1.sndcdn.com/artworks-000001936609-8znohi-t240x240.jpg" class="img_wizard_signature"/>
+            </div>
+        </xpath>
+    </t>
+        </template>

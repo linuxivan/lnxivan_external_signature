@@ -10,13 +10,43 @@
                 </div>
                 <div class="button-container">
 <!--                <button class="btn btn-primary" t-on-click="() => this.clearSignature()">Clear</button>-->
-<!--                    <button class="btn btn-primary" t-on-click="() => this.saveSignature()">Sign</button>-->
+                    <!--                    <button class="btn btn-primary" t-on-click="() => this.saveSignature()">Sign</button>-->
             </div>
-                <div class="canvas-container">
-                <canvas id="signature-pad" class="o-signature-canvas" width="400" height="400"
-                        t-ref="signatureCanvas"></canvas>
-            </div>
+                <div class="signature-container" t-ref="sign_div">
+
+                    <div class="container-signature">
+                        <div class="canvas-container-signature">
+                            <canvas class="canvas-signature" id="canvas" width="400" height="300"
+                                    t-ref="signatureCanvas"></canvas>
+                            <!-- Aquí puedes añadir tu código para el canvas -->
+                        </div>
+
+                        <div class="table-container-signature" t-if="pickingData.productList.length > 0">
+                            <h1>SUMMARY</h1>
+                            <table class="table-signature table">
+                                <tr>
+                                    <th class="th-signature">Product</th>
+                                    <th class="th-signature table-right-align">Qty</th>
+                                </tr>
+                                <tr t-foreach="pickingData.productList" t-as="product"
+                                        t-key="product.product_id">
+                                    <td class="td-signature" >
+                                        <span t-esc="product.product_id[1]"/>
+                                    </td>
+                                    <td class="td-signature table-right-align" >
+                                        <span t-esc="product.quantity_done"/>
+                                    </td>
+                                </tr>
+                                <!-- Puedes agregar más filas según lo necesites -->
+                            </table>
+                            <button class="btn btn-success signature-btn"
+                                    t-on-click="() => this.saveSignature()">Sign</button>
+
+                        </div>
+                    </div>
+
                 </div>
+            </div>
         </xpath>
     </t>
         </template>

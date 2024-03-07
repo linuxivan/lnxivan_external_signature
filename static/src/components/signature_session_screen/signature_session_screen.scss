@@ -1,4 +1,4 @@
-.waiting_signature_div{
+.waiting_signature_div {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -10,18 +10,87 @@
   z-index: 100;
   top: 0;
   left: 0;
+
   .waiting_signature_text {
     color: white;
     font-size: 20px;
     margin-top: 20px;
   }
+
   .waiting_signature_image {
     width: auto;
     height: 100px;
   }
+
   .waiting_signature_subtext {
     color: white;
     font-size: 15px;
     margin-top: 20px;
   }
+}
+
+
+.signature-container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.container-signature {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.canvas-container-signature {
+  flex: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+.canvas-signature {
+  border: 1px solid #000;
+  margin-right: 20px;
+}
+
+.table-container-signature {
+  flex: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra verticalmente */
+  align-items: center; /* Centra horizontalmente */
+  padding: 20px;
+}
+
+.table-signature {
+  border-collapse: collapse;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.table-signature, .th-signature, .td-signature {
+  //border: 1px solid black;
+  padding: 8px;
+}
+
+.th-signature {
+  background-color: #f2f2f2;
+  width: 200px;
+}
+
+.table-right-align{
+    text-align: right;
+}
+
+.signature-btn {
+  margin-top: 10px; /* Empuja el botón hacia abajo */
+  align-self: flex-end; /* Alinea el botón a la derecha */
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }

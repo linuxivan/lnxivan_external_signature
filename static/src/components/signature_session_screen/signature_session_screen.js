@@ -21,11 +21,14 @@ class SignatureFormController extends FormController {
 
         this.pickingData = useState({
             pickinId: "",
+            wizardId: "",
+            productList: [],
         })
         console.log(this)
         this.orm = useService("orm")
         this.canvas = owl.useRef("signatureCanvas");
         this.waiting_div = owl.useRef("waiting_div");
+        this.signDiv = owl.useRef("sign_div");
 
         onMounted(() => {
             this.createSignatureCanvas()
@@ -42,11 +45,13 @@ class SignatureFormController extends FormController {
 
     hideWaitingDiv() {
         this.waiting_div.el.style.display = "none";
+        this.signDiv.el.style.display = "flex";
     }
 
     showWaitingDiv() {
         this.clearSignature();
         this.waiting_div.el.style.display = "flex";
+        this.signDiv.el.style.display = "none";
         console.log("Showing waiting div")
     }
 
@@ -91,6 +96,13 @@ class SignatureFormController extends FormController {
             fields: ["picking_id"],
             domain: [["id", "=", this.props.resId]],
         });
+        if (this.pickingData.pickinId[0].picking_id && !this.pickingData.productList.length) {
+            this.pickingData.productList = await this.orm.call("stock.move", "search_read", [], {
+                fields: ["id", "product_id", "quantity_done"],
+                domain: [["picking_id", "=", this.pickingData.pickinId[0].picking_id[0]]],
+            });
+            }
+
     }
 
     hideOrShowDiv() {
@@ -106,7 +118,7 @@ class SignatureFormController extends FormController {
         const canvas = this.canvas.el;
         const ctx = canvas.getContext("2d");
         const controller = this;
-        canvas.width = window.innerWidth;
+        canvas.width = window.innerWidth * 0.7;
         canvas.height = window.innerHeight;
 
         let painting = false;
@@ -119,8 +131,6 @@ class SignatureFormController extends FormController {
         function endPosition() {
             painting = false;
             ctx.beginPath();
-
-            controller.saveSignature()
         }
 
         function draw(e) {

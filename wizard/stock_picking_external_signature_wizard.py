@@ -20,9 +20,9 @@ class StockPickingExternalSignatureWizard(models.TransientModel):
     def get_signature_session_id(self):
         for record in self:
             signature_session = self.env['signature.session'].search(
-                [('user_id', '=', self.env.user.id), ('state', '=', 'draft')])
+                [('user_id', '=', self.env.user.id), ('state', '=', 'draft'), ('signature_screen_id', '=', False)])
             if not signature_session:
-                raise UserError("There is no session started")
+                raise UserError("There is no session started or the session started is in use")
             record.signature_session_id = signature_session.id
 
     def request_signature(self):
@@ -31,6 +31,7 @@ class StockPickingExternalSignatureWizard(models.TransientModel):
         self.status = 'requested'
         self.signature_session_id.write({
             'picking_id': self.picking_id.id,
+            'request_wizard_id': [self.id]
         })
         return {
             'type': 'ir.actions.act_window',
@@ -40,24 +41,21 @@ class StockPickingExternalSignatureWizard(models.TransientModel):
             'target': 'new',
         }
 
-    def action_get_signature(self):
+    def clear_sign_session(self):
         self.ensure_one()
-        self.signature = self.signature_session_id.signature
         self.signature_session_id.write({
             'picking_id': False,
+            'request_wizard_id': False,
             'signature': False,
         })
-        return {
-            'type': 'ir.actions.act_window',
-            'res_model': 'stock.picking.external.signature.wizard',
-            'view_mode': 'form',
-            'res_id': self.id,
-            'target': 'new',
-        }
 
     def sign_picking(self):
         self.ensure_one()
+        self.signature_session_id.write({
+            'picking_id': False,
+            'request_wizard_id': False,
+            'signature': False,
+        })
         self.picking_id.write({
             'signature': self.signature
         })
-

@@ -17,7 +17,7 @@
                         <field name="text"/>
                         <field name="description"/>
                         <field name="image" widget="image"/>
-                        <field name="signature_session_id" readonly="1"/>
+                        <field name="signature_session_id" />
                     </group>
                     <button string="Create new session" type="object" name="action_start_session" class="oe_highlight"/>
                 </sheet>

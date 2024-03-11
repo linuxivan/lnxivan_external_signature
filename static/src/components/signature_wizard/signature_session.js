@@ -6,52 +6,51 @@ import {FormController} from "@web/views/form/form_controller"
 import {useService} from "@web/core/utils/hooks"
 import {url} from "@web/core/utils/urls";
 
-const {onWillStart, onMounted, onWillUpdate, onUpdated, onDestroyed} = owl
+const {status, onWillStart, onMounted, onWillUpdate, onUpdated, onDestroyed, onWillUnmount, useRef} = owl
 const {Component, useState} = owl
 
 class SignatureWizardFormController extends FormController {
     setup() {
         super.setup()
-        this.requestSignature = useState(false)
-        this.waiting = useState(false)
-        // this.pickingData = useState({
-        //     pickinId: "",
-        //     productList: [],
-        // })
+        console.log(this)
+        this.wizData = useState({
+            signature: "",
+            status: ""
+        })
         console.log("Por la democracion")
         this.orm = useService("orm")
 
-        // onMounted(() => {
-        //     this.createSignatureCanvas()
-        // })
-
-        // this.getData().then(r => console.log(r))
-        //
-        // setInterval(() => {
-        //         this.getPickinId().then(r => this.hideOrShowDiv())
-        //     }
-        //     , 5000)
+        this.intervalId = setInterval(() => {
+                if (status(this) === "destroyed") {
+                    clearInterval(this.intervalId)
+                } else {
+                    this.checkSignature()
+                }
+            }
+            , 5000)
 
     }
 
-
-    async getPickinId() {
-        this.pickingData.pickinId = await this.orm.call("signature.session", "search_read", [], {
-            fields: ["picking_id"],
+    async checkSignature() {
+        console.log("Checking signature")
+        const signatureData = await this.orm.call("stock.picking.external.signature.wizard", "search_read", [], {
+            fields: ["signature"],
             domain: [["id", "=", this.props.resId]],
         });
-        if (this.pickingData.pickinId[0].picking_id && !this.pickingData.productList.length) {
-            this.pickingData.productList = await this.orm.call("stock.move", "search_read", [], {
-                fields: ["id", "product_id", "quantity_done"],
-                domain: [["picking_id", "=", this.pickingData.pickinId[0].picking_id[0]]],
-            });
-            }
 
+        console.log(signatureData)
+        if (signatureData.length > 0) {
+            const imageurl = url("/web/image", {
+                model: "stock.picking.external.signature.wizard",
+                field: "signature",
+                id: this.props.resId,
+            });
+            this.wizData.signature = imageurl
+        }
     }
 
 }
 
-// ResPartnerFormController.template = "owl.ResPartnerFormView"
 SignatureWizardFormController.template = "lnxivan_external_signature.SignatureWizard"
 
 export const signatureWizardFormView = {

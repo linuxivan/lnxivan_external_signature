@@ -6,7 +6,7 @@ import {FormController} from "@web/views/form/form_controller"
 import {useService} from "@web/core/utils/hooks"
 import {url} from "@web/core/utils/urls";
 
-const {onWillStart, onMounted, onWillUpdate, onUpdated, onDestroyed} = owl
+const {status, onWillStart, onMounted, onWillUpdate, onUpdated, onDestroyed, onWillUnmount} = owl
 const {Component, useState} = owl
 
 class SignatureFormController extends FormController {
@@ -24,7 +24,6 @@ class SignatureFormController extends FormController {
             wizardId: "",
             productList: [],
         })
-        console.log(this)
         this.orm = useService("orm")
         this.canvas = owl.useRef("signatureCanvas");
         this.waiting_div = owl.useRef("waiting_div");
@@ -34,10 +33,14 @@ class SignatureFormController extends FormController {
             this.createSignatureCanvas()
         })
 
-        this.getData().then(r => console.log(r))
+        this.getData().then(r => this.clearSession())
 
-        setInterval(() => {
-                this.getPickinId().then(r => this.hideOrShowDiv())
+        this.intervalId = setInterval(() => {
+                if (status(this) === "destroyed") {
+                    clearInterval(this.intervalId)
+                } else {
+                    this.getPickinId().then(r => this.hideOrShowDiv())
+                }
             }
             , 5000)
 
@@ -52,27 +55,33 @@ class SignatureFormController extends FormController {
         this.clearSignature();
         this.waiting_div.el.style.display = "flex";
         this.signDiv.el.style.display = "none";
-        console.log("Showing waiting div")
     }
 
     async saveSignature() {
         const canvas = this.canvas.el;
         const imageDataURL = canvas.toDataURL();
-        console.log(imageDataURL)
         try {
-            // Enviar la imagen al servidor y guardarla en el campo "signature" del registro
-            await this.orm.call("signature.session", "write", [[this.props.resId], {
+            await this.orm.call("stock.picking.external.signature.wizard", "write", [[this.pickingData.wizardId[0].request_wizard_id[0]], {
                 signature: imageDataURL.split(',')[1], // Envía solo el contenido de la imagen (sin el prefijo "data:image/png;base64,")
+            }]).then(r => this.clearSession())
+        } catch (error) {
+            console.error("Error saving signature:", error);
+        }
+    }
+
+    async clearSession() {
+        try {
+            await this.orm.call("signature.session", "write", [[this.props.resId], {
+                signature: false,
+                request_wizard_id: false,
+                picking_id: false,
             }]);
-            console.log("Signature saved successfully");
         } catch (error) {
             console.error("Error saving signature:", error);
         }
     }
 
     async getData() {
-        console.log("Getting data")
-        console.log(this.props.resId)
         const res = await this.orm.call("signature.session", "search_read", [], {
             fields: ["text", "description"],
             domain: [["id", "=", this.props.resId]],
@@ -86,7 +95,6 @@ class SignatureFormController extends FormController {
             field: "image",
             id: this.props.resId,
         });
-        console.log(imageurl)
         this.modelData.image = imageurl
 
     }
@@ -96,12 +104,16 @@ class SignatureFormController extends FormController {
             fields: ["picking_id"],
             domain: [["id", "=", this.props.resId]],
         });
+        this.pickingData.wizardId = await this.orm.call("signature.session", "search_read", [], {
+            fields: ["request_wizard_id"],
+            domain: [["id", "=", this.props.resId]],
+        });
         if (this.pickingData.pickinId[0].picking_id && !this.pickingData.productList.length) {
             this.pickingData.productList = await this.orm.call("stock.move", "search_read", [], {
                 fields: ["id", "product_id", "quantity_done"],
                 domain: [["picking_id", "=", this.pickingData.pickinId[0].picking_id[0]]],
             });
-            }
+        }
 
     }
 
@@ -114,7 +126,6 @@ class SignatureFormController extends FormController {
     }
 
     createSignatureCanvas() {
-        console.log("Creating signature canvas");
         const canvas = this.canvas.el;
         const ctx = canvas.getContext("2d");
         const controller = this;

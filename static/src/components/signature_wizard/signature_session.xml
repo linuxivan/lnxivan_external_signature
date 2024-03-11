@@ -2,8 +2,15 @@
 <template xml:space="preserve">
     <t t-name="lnxivan_external_signature.SignatureWizard" t-inherit="web.FormView">
         <xpath expr="//div[hasclass('o_form_view_container')]" position="before">
+            <div class="waiting_signature_wizard" t-ref="waiting_signature_wizard" >
+                <h2 class="font-weight-bold">Waiting for signature...</h2>
+                <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
             <div class="div_wizard_signature">
-                <img src="https://i1.sndcdn.com/artworks-000001936609-8znohi-t240x240.jpg" class="img_wizard_signature"/>
+                <img class="img_wizard_signature" t-if="len(wizData.signature) > 10" t-att-src="wizData.signature" width="400"
+                     height="400"/>
             </div>
         </xpath>
     </t>
